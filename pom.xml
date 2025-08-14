@@ -18,6 +18,7 @@
     <modules>
         <module>api-passenger</module>
         <module>internal-common</module>
+        <module>service-verificationcode</module>
     </modules>
 
     <properties>
@@ -40,4 +41,25 @@
             <optional>true</optional>
         </dependency>
     </dependencies>
+    <dependencyManagement>
+        <!-- 定义版本预使用   -->
+        <!--   alibaba     -->
+        <dependencies>
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>2021.1</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <!--     spring-cloud依赖版本       -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>2020.0.1</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>
