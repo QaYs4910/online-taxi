@@ -17,6 +17,7 @@ public class NumberCodeController {
         int result = (int)((Math.random()*9+ 1) * (Math.pow(10,size - 1)));
         NumberCodeResponse codeResponse = new NumberCodeResponse();
         codeResponse.setNumberCode(result);
+        System.out.println("service code:"+result);
         return  ResponseResult.success(codeResponse);
     }
 }
