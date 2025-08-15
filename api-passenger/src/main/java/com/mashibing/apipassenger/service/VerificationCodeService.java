@@ -5,4 +5,6 @@ import com.mashibing.internalcommon.dto.ResponseResult;
 public interface VerificationCodeService {
 
     ResponseResult generatorCode(String passengerPhone);
+
+    ResponseResult checkCode(String passengerPhone, String verificationCode);
 }

@@ -4,6 +4,7 @@ import com.mashibing.apipassenger.reomte.ServiceVerificationCodeClient;
 import com.mashibing.apipassenger.service.VerificationCodeService;
 import com.mashibing.internalcommon.dto.ResponseResult;
 import com.mashibing.internalcommon.response.NumberCodeResponse;
+import com.mashibing.internalcommon.response.TokenResponse;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -22,10 +23,16 @@ public class VerificationCodeServiceImp  implements VerificationCodeService {
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
+
+    /**
+     * 生成验证码
+     * @param passengerPhone
+     * @return
+     */
     @Override
     public ResponseResult generatorCode(String passengerPhone){
-        ResponseResult<NumberCodeResponse> response = this.serviceVerificationCodeClient.getNumberCode(6);
 
+        ResponseResult<NumberCodeResponse> response = this.serviceVerificationCodeClient.getNumberCode(6);
         //调用验证码服务,获取验证码
         int numberCode = response.getData().getNumberCode();
 
@@ -34,10 +41,30 @@ public class VerificationCodeServiceImp  implements VerificationCodeService {
         String key = verificationCodePrefix + passengerPhone;
         //设置key value 值的过期时间为2分钟
         stringRedisTemplate.opsForValue().set(key,numberCode+"",2, TimeUnit.MINUTES);
-
         //短信服务接通
-
         return ResponseResult.success("");
+    }
+
+    /**
+     * 校验验证码
+     * @param passengerPhone 手机号
+     * @param verificationCode 验证码
+     * @return
+     */
+    @Override
+    public ResponseResult checkCode(String passengerPhone, String verificationCode) {
+
+        //1.根据手机号去redis读验证码
+        System.out.println("redis读验证码");
+        //2.校验验证码
+        System.out.println("校验验证码");
+        //3.判断是否有用户
+        System.out.println("判断是否有用户");
+        //4.颁发令牌
+        System.out.println("颁发令牌");
+        TokenResponse tokenResponse = new TokenResponse();
+        tokenResponse.setToken("token String");
+        return ResponseResult.success(tokenResponse);
     }
 
 
