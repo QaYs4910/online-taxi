@@ -1,6 +1,8 @@
 package com.mashibing.apipassenger.service;
 
+import com.mashibing.internalcommon.dto.ResponseResult;
+
 public interface VerificationCodeService {
 
-    String generatorCode(String passengerPhone);
+    ResponseResult generatorCode(String passengerPhone);
 }
