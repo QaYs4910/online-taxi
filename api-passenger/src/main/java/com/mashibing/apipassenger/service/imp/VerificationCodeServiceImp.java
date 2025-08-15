@@ -2,10 +2,12 @@ package com.mashibing.apipassenger.service.imp;
 
 import com.mashibing.apipassenger.reomte.ServiceVerificationCodeClient;
 import com.mashibing.apipassenger.service.VerificationCodeService;
+import com.mashibing.internalcommon.constant.CommonStatusEnum;
 import com.mashibing.internalcommon.dto.ResponseResult;
 import com.mashibing.internalcommon.response.NumberCodeResponse;
 import com.mashibing.internalcommon.response.TokenResponse;
 import net.sf.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -38,7 +40,7 @@ public class VerificationCodeServiceImp  implements VerificationCodeService {
 
         //存入redis
         //前缀+手机号
-        String key = verificationCodePrefix + passengerPhone;
+        String key = generatorKey(passengerPhone);
         //设置key value 值的过期时间为2分钟
         stringRedisTemplate.opsForValue().set(key,numberCode+"",2, TimeUnit.MINUTES);
         //短信服务接通
@@ -56,8 +58,18 @@ public class VerificationCodeServiceImp  implements VerificationCodeService {
 
         //1.根据手机号去redis读验证码
         System.out.println("redis读验证码");
+        String key = generatorKey(passengerPhone);
+        String codeRedis = this.stringRedisTemplate.opsForValue().get(key);
+        System.out.println("获取redisCode:"+codeRedis);
+
         //2.校验验证码
         System.out.println("校验验证码");
+        if(StringUtils.isBlank(codeRedis)){
+            return ResponseResult.fail(CommonStatusEnum.VERIFICATION_CODE_ERROR.getCode(),CommonStatusEnum.VERIFICATION_CODE_ERROR.getValue());
+        }
+        if(!codeRedis.trim().equals(verificationCode.trim())){
+            return ResponseResult.fail(CommonStatusEnum.VERIFICATION_CODE_ERROR.getCode(),CommonStatusEnum.VERIFICATION_CODE_ERROR.getValue());
+        }
         //3.判断是否有用户
         System.out.println("判断是否有用户");
         //4.颁发令牌
@@ -67,5 +79,9 @@ public class VerificationCodeServiceImp  implements VerificationCodeService {
         return ResponseResult.success(tokenResponse);
     }
 
+    private String generatorKey(String passengerPhone){
+
+        return verificationCodePrefix + passengerPhone;
+    }
 
 }
