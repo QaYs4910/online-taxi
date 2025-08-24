@@ -7,6 +7,7 @@ import com.mashibing.servicepassengeruser.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 
@@ -25,7 +26,18 @@ public class UserServiceImp implements UserService {
         HashMap<String, Object> map = new HashMap<>();
         map.put("passenger_phone",passengerPhone);
         List<PassengerUser> passengerUsers = this.passengerUserMapper.selectByMap(map);
-        System.out.println(passengerUsers==null?"无记录":passengerUsers.get(0).getPassengerName());
+        //用户不存在插入数据
+        if(passengerUsers.size() == 0){
+            PassengerUser passengerUser = new PassengerUser();
+            passengerUser.setPassengerName("张三");
+            passengerUser.setPassengerGender((byte) 0);
+            passengerUser.setPassengerPhone(passengerPhone);
+            passengerUser.setState((byte) 0);
+            LocalDateTime now = LocalDateTime.now();
+            passengerUser.setGmtCreate(now);
+            passengerUser.setGmtModified(now);
+            this.passengerUserMapper.insert(passengerUser);
+        }
         System.out.println("UserService 被调用>手机号:"+passengerPhone);
         return ResponseResult.success();
     }
