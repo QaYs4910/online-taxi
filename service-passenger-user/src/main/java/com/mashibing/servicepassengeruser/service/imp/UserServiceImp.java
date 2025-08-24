@@ -38,7 +38,6 @@ public class UserServiceImp implements UserService {
             passengerUser.setGmtModified(now);
             this.passengerUserMapper.insert(passengerUser);
         }
-        System.out.println("UserService 被调用>手机号:"+passengerPhone);
         return ResponseResult.success();
     }
 

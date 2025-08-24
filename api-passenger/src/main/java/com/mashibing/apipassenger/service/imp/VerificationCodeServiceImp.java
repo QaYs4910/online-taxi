@@ -1,9 +1,11 @@
 package com.mashibing.apipassenger.service.imp;
 
+import com.mashibing.apipassenger.reomte.ServicePassengerUserClient;
 import com.mashibing.apipassenger.reomte.ServiceVerificationCodeClient;
 import com.mashibing.apipassenger.service.VerificationCodeService;
 import com.mashibing.internalcommon.constant.CommonStatusEnum;
 import com.mashibing.internalcommon.dto.ResponseResult;
+import com.mashibing.internalcommon.request.VerificationCodeDTO;
 import com.mashibing.internalcommon.response.NumberCodeResponse;
 import com.mashibing.internalcommon.response.TokenResponse;
 import net.sf.json.JSONObject;
@@ -22,6 +24,9 @@ public class VerificationCodeServiceImp  implements VerificationCodeService {
 
     @Autowired
     private ServiceVerificationCodeClient serviceVerificationCodeClient;
+
+    @Autowired
+    private ServicePassengerUserClient servicePassengerUserClient;
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
@@ -71,7 +76,10 @@ public class VerificationCodeServiceImp  implements VerificationCodeService {
             return ResponseResult.fail(CommonStatusEnum.VERIFICATION_CODE_ERROR.getCode(),CommonStatusEnum.VERIFICATION_CODE_ERROR.getValue());
         }
         //3.判断是否有用户
-        System.out.println("判断是否有用户");
+        VerificationCodeDTO verificationCodeDTO = new VerificationCodeDTO();
+        verificationCodeDTO.setPassengerPhone(passengerPhone);
+        this.servicePassengerUserClient.loginOrRegister(verificationCodeDTO);
+
         //4.颁发令牌
         System.out.println("颁发令牌");
         TokenResponse tokenResponse = new TokenResponse();
