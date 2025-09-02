@@ -4,10 +4,12 @@ import com.mashibing.apipassenger.reomte.ServicePassengerUserClient;
 import com.mashibing.apipassenger.reomte.ServiceVerificationCodeClient;
 import com.mashibing.apipassenger.service.VerificationCodeService;
 import com.mashibing.internalcommon.constant.CommonStatusEnum;
+import com.mashibing.internalcommon.constant.IdentityConstant;
 import com.mashibing.internalcommon.dto.ResponseResult;
 import com.mashibing.internalcommon.request.VerificationCodeDTO;
 import com.mashibing.internalcommon.response.NumberCodeResponse;
 import com.mashibing.internalcommon.response.TokenResponse;
+import com.mashibing.internalcommon.util.JwtUtils;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,8 +84,9 @@ public class VerificationCodeServiceImp  implements VerificationCodeService {
 
         //4.颁发令牌
         System.out.println("颁发令牌");
+        String token = JwtUtils.generatorToken(passengerPhone, IdentityConstant.PASSENGER_IDENTITY);
         TokenResponse tokenResponse = new TokenResponse();
-        tokenResponse.setToken("token String");
+        tokenResponse.setToken(token);
         return ResponseResult.success(tokenResponse);
     }
 
