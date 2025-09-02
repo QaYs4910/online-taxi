@@ -33,6 +33,7 @@ public class VerificationCodeServiceImp  implements VerificationCodeService {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
+    private String tokenPrefix = "token-";
     /**
      * 生成验证码
      * @param passengerPhone
@@ -85,6 +86,10 @@ public class VerificationCodeServiceImp  implements VerificationCodeService {
         //4.颁发令牌
         System.out.println("颁发令牌");
         String token = JwtUtils.generatorToken(passengerPhone, IdentityConstant.PASSENGER_IDENTITY);
+        //5.存储token
+        String tokenkey = generatorTokenKey(passengerPhone, IdentityConstant.PASSENGER_IDENTITY);
+        this.stringRedisTemplate.opsForValue().set(tokenkey,token,30,TimeUnit.DAYS);//token存30天
+
         TokenResponse tokenResponse = new TokenResponse();
         tokenResponse.setToken(token);
         return ResponseResult.success(tokenResponse);
@@ -93,6 +98,11 @@ public class VerificationCodeServiceImp  implements VerificationCodeService {
     private String generatorKey(String passengerPhone){
 
         return verificationCodePrefix + passengerPhone;
+    }
+
+    private String generatorTokenKey(String phone,String identity){
+
+        return  tokenPrefix + phone + "-" + identity ;
     }
 
 }
